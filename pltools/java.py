@@ -4,12 +4,40 @@ import subprocess as sp
 import json
 import graphviz as gz
 
+from JavaLexer import JavaLexer
+from JavaListener import JavaListener
+from JavaParser import JavaParser
+from antlr4 import *
+
 
 __all__ = [
+    "get_method_names",
     "ProjectStructure",
     "dump_project_structure",
     "project_structure_dot"
 ]
+
+
+class MethodListener(JavaListener):
+    def __init__(self):
+        self.method_names = []
+
+    def enterMethodDeclaration(self, ctx):
+        m_n = ctx.Identifier().getText()
+        if m_n not in self.method_names:
+            self.method_names.append(m_n)
+
+
+def get_method_names(java_src_file):
+    lexer = JavaLexer(FileStream(java_src_file))
+    token_stream = CommonTokenStream(lexer)
+    parser = JavaParser(token_stream)
+    tree = parser.compilationUnit()
+    walker = ParseTreeWalker()
+    m = MethodListener()
+    walker.walk(m, tree)
+
+    return m.method_names
 
 
 class ProjectStructure(object):
