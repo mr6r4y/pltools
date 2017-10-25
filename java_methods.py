@@ -1,13 +1,16 @@
 #!/usr/bin/env python
 
 import os
+import sys
 import argparse
-from pltools.java import get_method_names
+from pltools.java import format_class_dot_node, format_class
 
 
 def get_args():
     parser = argparse.ArgumentParser(description="Extract all method names from a java source file")
-    parser.add_argument("-f", "--java-file", help="Path to java source file")
+    parser.add_argument("-j", "--java-file", help="Path to java source file")
+    parser.add_argument("-f", "--format", help="Format to print the class structure in",
+                        choices=["dot", "txt"], default="txt")
     args = parser.parse_args()
 
     return args
@@ -16,8 +19,16 @@ def get_args():
 def main():
     args = get_args()
     java_file = os.path.abspath(args.java_file)
+    print_format = args.format
 
-    for i in get_method_names(java_file):
+    if print_format == "dot":
+        a = format_class_dot_node(java_file)
+    elif print_format == "txt":
+        a = format_class(java_file)
+    else:
+        sys.exit()
+
+    for i in a:
         print i
 
 

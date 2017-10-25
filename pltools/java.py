@@ -11,33 +11,113 @@ from antlr4 import *
 
 
 __all__ = [
-    "get_method_names",
+    "format_class_dot_node",
+    "format_class",
     "ProjectStructure",
     "dump_project_structure",
     "project_structure_dot"
 ]
 
 
-class MethodListener(JavaListener):
+class JavaAnalysisListener(JavaListener):
     def __init__(self):
-        self.method_names = []
+        self.package = None
+        self.classes = {}
+        self._current_class = None
+        self._debug_method_ctx = []
+        self._debug_classes_ctx = []
 
     def enterMethodDeclaration(self, ctx):
         m_n = ctx.Identifier().getText()
-        if m_n not in self.method_names:
-            self.method_names.append(m_n)
+
+        modifiers = ctx.parentCtx.parentCtx
+        try:
+            for i in modifiers.modifier():
+                m = i.getText()
+                if m in ("public", "protected", "private"):
+                    break
+        except Exception:
+            m = "public"
+
+        if self._current_class is None:
+            raise StandardError("Method seems to be declared outside a class: %s" % m_n)
+
+        if self._current_class not in self.classes:
+            raise StandardError("Current class is not in self.classes: %s" % self._current_class)
+
+        if m_n not in self.classes[self._current_class]["%s_methods" % m]:
+            self.classes[self._current_class]["%s_methods" % m].append(m_n)
+
+    def enterClassDeclaration(self, ctx):
+        self._current_class = ctx.Identifier().getText()
+        try:
+            extends = ctx.typeType().getText()
+        except Exception:
+            extends = None
+        if self._current_class not in self.classes:
+            self.classes[self._current_class] = {
+                "class_name": self._current_class,
+                "extends": extends,
+                "public_methods": [],
+                "protected_methods": [],
+                "private_methods": []
+            }
 
 
-def get_method_names(java_src_file):
-    lexer = JavaLexer(FileStream(java_src_file))
-    token_stream = CommonTokenStream(lexer)
-    parser = JavaParser(token_stream)
-    tree = parser.compilationUnit()
-    walker = ParseTreeWalker()
-    m = MethodListener()
-    walker.walk(m, tree)
+class JavaAnalysis(object):
+    def __init__(self, java_src_file):
+        lexer = JavaLexer(FileStream(java_src_file))
+        token_stream = CommonTokenStream(lexer)
+        parser = JavaParser(token_stream)
+        tree = parser.compilationUnit()
+        walker = ParseTreeWalker()
+        self.analysis_listener = JavaAnalysisListener()
+        walker.walk(self.analysis_listener, tree)
 
-    return m.method_names
+    def get_classes(self):
+        return self.analysis_listener.classes
+
+
+def format_class_dot_node(java_src_file):
+    c = JavaAnalysis(java_src_file).get_classes()
+    for i in c.values():
+        class_name = i["class_name"]
+        public_methods = "".join(["  + %s\l" % j for j in i["public_methods"]])
+        protected_methods = "".join(["  + %s\l" % j for j in i["protected_methods"]])
+        private_methods = "".join(["  + %s\l" % j for j in i["private_methods"]])
+
+        a = """"%s" [label="%s
+---------------------------
+public:\l
+%s
+protected:\l
+%s
+private:\l
+%s"]
+""" % (class_name, class_name, public_methods, protected_methods, private_methods)
+
+        yield a
+
+
+def format_class(java_src_file):
+    c = JavaAnalysis(java_src_file).get_classes()
+    for i in c.values():
+        class_name = i["class_name"]
+        public_methods = "".join(["  + %s\n" % j for j in i["public_methods"]])
+        protected_methods = "".join(["  + %s\n" % j for j in i["protected_methods"]])
+        private_methods = "".join(["  + %s\n" % j for j in i["private_methods"]])
+
+        a = """%s
+---------------------------
+public:
+%s
+protected:
+%s
+private:
+%s
+""" % (class_name, public_methods, protected_methods, private_methods)
+
+        yield a
 
 
 class ProjectStructure(object):
