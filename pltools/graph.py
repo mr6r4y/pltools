@@ -22,17 +22,13 @@ def struct_to_label(s):
         return '<%s> %s' % (esc(s), esc(s))
 
 
-def list_to_label(s):
-    if isinstance(s, tuple):
-        sub_id = s[0]
-        b = s[1]
-        if isinstance(b, str):
-            return '<%s> %s' % (sub_id, esc(b))
-        elif isinstance(b, collections.Iterable):
-            b = " | ".join([struct_to_label(i) for i in b])
-            return '{ . | {%s}}' % (b)
-    elif isinstance(s, str):
-        return '<%s> %s' % (esc(s), esc(s))
+def list_to_label(items):
+    trs = []
+    for item in items:
+        trs.append("<TR><TD>%s</TD></TR>" % (esc(item)))
+
+    return '<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">%s</TABLE>>' % ("".join(trs))
+
 
 
 def arrow(g, edges):

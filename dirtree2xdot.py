@@ -77,10 +77,9 @@ class PathTree(object):
                     self.graph.edge(parent[0], file_id)
         else:
             files_id = "files_%i" % self.get_id()
-            structure = (files_id, node["files"])
 
             if len(node["files"]) > 0:
-                self.graph.node(files_id, label=list_to_label(structure))
+                self.graph.node(files_id, shape="none", margin="0", label=list_to_label(node["files"]))
 
             if parent[0] and len(node["files"]) > 0:
                 self.graph.edge(parent[0], files_id)
