@@ -33,6 +33,8 @@ setuptools.setup(
     entry_points={
         "console_scripts": [
             "pathtree2dot = pltools.pathtree:main",
+            "java_methods = pltools.java_methods:main",
+            "c_defined_functions = pltools.c_defined_functions:main"
         ]
     }
 )

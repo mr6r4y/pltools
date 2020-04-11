@@ -3,11 +3,11 @@
 import os
 import sys
 import argparse
-from pltools.java import format_class_dot_node, format_class
+from .java import format_class_dot_node, format_class
 
 
 def get_args():
-    parser = argparse.ArgumentParser(description="Extract all method names from a java source file")
+    parser = argparse.ArgumentParser(description="Extract all classes and method names from a java source file")
     parser.add_argument("-j", "--java-file", help="Path to java source file")
     parser.add_argument("-f", "--format", help="Format to print the class structure in",
                         choices=["dot", "txt"], default="txt")
@@ -29,7 +29,7 @@ def main():
         sys.exit()
 
     for i in a:
-        print i
+        print(i)
 
 
 if __name__ == '__main__':

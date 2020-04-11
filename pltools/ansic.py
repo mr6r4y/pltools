@@ -4,9 +4,9 @@ import subprocess as sp
 import json
 import graphviz as gz
 
-from CLexer import CLexer
-from CListener import CListener
-from CParser import CParser
+from .CLexer import CLexer
+from .CListener import CListener
+from .CParser import CParser
 from antlr4 import *
 
 

@@ -1,8 +1,6 @@
-#!/usr/bin/env python
-
 import os
 import argparse
-from pltools.ansic import CAnalysis
+from .ansic import CAnalysis
 
 
 def get_args():
@@ -20,7 +18,7 @@ def main():
     a = CAnalysis(c_file).get_defined_functions()
 
     for i in a:
-        print i
+        print(i)
 
 
 if __name__ == '__main__':
