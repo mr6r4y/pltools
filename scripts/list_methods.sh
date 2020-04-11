@@ -15,6 +15,6 @@ done
 
 
 for i in $( ls "$java_src_dir" ); do 
-    java_methods.py -f dot -j $java_src_dir/$i; 
+    java_methods -f dot -j $java_src_dir/$i; 
     echo;
 done
