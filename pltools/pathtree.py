@@ -1,24 +1,10 @@
-#!/usr/bin/env python3
-
-
 import os
 import sys
 import argparse
 import re
 import graphviz as gv
 
-from pltools.graph import list_to_label
-
-
-def get_args():
-    parser = argparse.ArgumentParser(description="Parses strings of source code from crash dump and generates a source tree")
-    parser.add_argument("-f", "--strings-file", help="File containing strings of source names")
-    parser.add_argument("-d", "--directory", help="Build graph dot file from a directory tree instead of a file with path collection")
-    parser.add_argument("-s", "--separate-file-nodes", action="store_true", default=False,
-                        help="If set, the files are generated as separate nodes not as record struct")
-
-    args = parser.parse_args()
-    return args
+from .graph import list_to_label
 
 
 class PathTree(object):
@@ -104,6 +90,17 @@ class PathTree(object):
 
 def is_excluded(excluded, root):
     return any(map(lambda a: a.strip("/") in root.split("/"), excluded))
+
+
+def get_args():
+    parser = argparse.ArgumentParser(description="Parses strings of source code from crash dump and generates a source tree")
+    parser.add_argument("-f", "--strings-file", help="File containing strings of source names")
+    parser.add_argument("-d", "--directory", help="Build graph dot file from a directory tree instead of a file with path collection")
+    parser.add_argument("-s", "--separate-file-nodes", action="store_true", default=False,
+                        help="If set, the files are generated as separate nodes not as record struct")
+
+    args = parser.parse_args()
+    return args
 
 
 def main():

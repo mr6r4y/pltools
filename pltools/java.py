@@ -4,9 +4,9 @@ import subprocess as sp
 import json
 import graphviz as gz
 
-from JavaLexer import JavaLexer
-from JavaListener import JavaListener
-from JavaParser import JavaParser
+from .JavaLexer import JavaLexer
+from .JavaListener import JavaListener
+from .JavaParser import JavaParser
 from antlr4 import *
 
 
@@ -173,7 +173,7 @@ class ProjectStructure(object):
                     package, classes = self._parse_src_file(fl)
                     self._merge((package, classes), self.project_struct)
             except Exception:
-                print f
+                print(f)
 
     def project(self, path):
         old_cwd = os.path.abspath(os.getcwd())
@@ -236,7 +236,7 @@ def project_structure_dot(project_structure, dot_file, edges=None):
             try:
                 cl2, method2 = edge[1]
             except Exception:
-                print edge
+                print(edge)
             pkg1 = cl_struct.get(cl1, '-')
             pkg2 = cl_struct.get(cl2, '-')
 

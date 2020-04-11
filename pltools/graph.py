@@ -30,7 +30,6 @@ def list_to_label(items):
     return '<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">%s</TABLE>>' % ("".join(trs))
 
 
-
 def arrow(g, edges):
     for i in range(len(edges) - 1):
         if isinstance(edges[i + 1], str):
