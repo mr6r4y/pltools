@@ -13,18 +13,31 @@ def esc(s):
 def struct_to_label(s):
     if isinstance(s, tuple):
         sub_id, body = s
-        if isinstance(body, basestring):
+        if isinstance(body, str):
             return '<%s> %s' % (sub_id, esc(body))
         elif isinstance(body, collections.Iterable):
             b = " | ".join([struct_to_label(i) for i in body])
             return '{<%s> %s | {%s}}' % (sub_id, sub_id, b)
-    elif isinstance(s, basestring):
+    elif isinstance(s, str):
+        return '<%s> %s' % (esc(s), esc(s))
+
+
+def list_to_label(s):
+    if isinstance(s, tuple):
+        sub_id = s[0]
+        b = s[1]
+        if isinstance(b, str):
+            return '<%s> %s' % (sub_id, esc(b))
+        elif isinstance(b, collections.Iterable):
+            b = " | ".join([struct_to_label(i) for i in b])
+            return '{ . | {%s}}' % (b)
+    elif isinstance(s, str):
         return '<%s> %s' % (esc(s), esc(s))
 
 
 def arrow(g, edges):
     for i in range(len(edges) - 1):
-        if isinstance(edges[i + 1], basestring):
+        if isinstance(edges[i + 1], str):
             g.edge(esc(edges[i]), esc(edges[i + 1]))
         elif isinstance(edges[i + 1], collections.Iterable):
             for j in edges[i + 1]:
@@ -33,7 +46,7 @@ def arrow(g, edges):
 
 def nodes(g, nodes):
     for n in nodes:
-        if isinstance(n, basestring):
+        if isinstance(n, str):
             g.node(name=esc(n))
         elif isinstance(n, tuple):
             g.node(name=esc(n[0]), label=esc(n[1]))
