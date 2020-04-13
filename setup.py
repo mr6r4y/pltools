@@ -20,16 +20,7 @@ setuptools.setup(
         "Topic :: Software Development :: Quality Assurance"
     ],
     python_requires='>=3.6',
-    install_requires=[
-        "antlr4-python3-runtime==4.8",
-        "graphviz>=0.13.2",
-        "pycairo>=1.19.1",
-        "ruamel.yaml>=0.16.10",
-        "ruamel.yaml.clib>=0.2.0",
-        "vext>=0.7.3",
-        "vext.gi>=0.7.0",
-        "xdot>=1.1",
-    ],
+    install_requires=[line.strip() for line in open("requirements.txt", "r") if line.strip()],
     entry_points={
         "console_scripts": [
             "pathtree2dot = pltools.pathtree:main",

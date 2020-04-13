@@ -1,0 +1,7 @@
+antlr4-python3-runtime==4.8
+graphviz>=0.13.2
+ruamel.yaml>=0.16.10
+ruamel.yaml.clib>=0.2.0
+vext>=0.7.3
+vext.gi>=0.7.0
+xdot>=1.1
